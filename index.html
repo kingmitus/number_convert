@@ -134,8 +134,24 @@ function checkAnswers() {
         Octal:   ${c.oct}
     `;
 }
+    /* ---------------------------
+   Random image generator
+----------------------------*/
+function newRandomImage() {
+    document.getElementById("randomImg").src =
+        "https://picsum.photos/250?random=" + Math.random();
+}
+
+/* ---------------------------
+   Dark mode toggle
+----------------------------*/
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+}
+
 </script>
 
 </body>
 </html>
+
 
