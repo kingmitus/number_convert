@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Number Conversion Practice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 30px;
+        }
+        label, select, input, button {
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+        #problem, #results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #bbb;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Number Conversion Practice</h2>
+
+<div>
+    <label>Bit width:</label>
+    <select id="bitWidth">
+        <option>8</option>
+        <option>16</option>
+        <option>32</option>
+    </select>
+</div>
+
+<div>
+    <label>Conversion type:</label>
+    <select id="mode">
+        <option value="dec">Decimal → others</option>
+        <option value="bin">Binary → others</option>
+        <option value="hex">Hex → others</option>
+        <option value="oct">Octal → others</option>
+        <option value="mix">Random</option>
+    </select>
+</div>
+
+<button onclick="newProblem()">New Problem</button>
+
+<div id="problem"></div>
+<div id="results"></div>
+
+
+<script>
+function randomSigned(bits) {
+    const min = -(1 << (bits - 1));
+    const max = (1 << (bits - 1)) - 1;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function toTwosComplement(value, bits) {
+    if (value < 0) value = (1 << bits) + value;
+    return value.toString(2).padStart(bits, "0");
+}
+
+function fromTwos(bin) {
+    const bits = bin.length;
+    let val = parseInt(bin, 2);
+    if (bin[0] === "1") val -= (1 << bits);
+    return val;
+}
+
+let current = {};
+
+function newProblem() {
+    const bits = parseInt(document.getElementById("bitWidth").value);
+    let mode = document.getElementById("mode").value;
+
+    if (mode === "mix") {
+        const list = ["dec", "bin", "hex", "oct"];
+        mode = list[Math.floor(Math.random() * list.length)];
+    }
+
+    const num = randomSigned(bits);
+    const bin = toTwosComplement(num, bits);
+    const hex = parseInt(bin, 2).toString(16).toUpperCase();
+    const oct = parseInt(bin, 2).toString(8);
+
+    current = { bits, mode, num, bin, hex, oct };
+
+    let prompt = "";
+    if (mode === "dec") prompt = "Decimal: " + num;
+    if (mode === "bin") prompt = "Binary: " + bin;
+    if (mode === "hex") prompt = "Hex: " + hex;
+    if (mode === "oct") prompt = "Octal: " + oct;
+
+    document.getElementById("problem").innerHTML = `
+        <h3>${prompt}</h3>
+        <div>
+            Decimal: <input id="inDec"><br>
+            Binary:  <input id="inBin"><br>
+            Hex:     <input id="inHex"><br>
+            Octal:   <input id="inOct"><br><br>
+            <button onclick="checkAnswers()">Check</button>
+        </div>
+    `;
+
+    document.getElementById("results").innerHTML = "";
+}
+
+function checkAnswers() {
+    const c = current;
+    document.getElementById("results").innerHTML = `
+        <h3>Correct values</h3>
+        Decimal: ${c.num}<br>
+        Binary:  ${c.bin}<br>
+        Hex:     ${c.hex}<br>
+        Octal:   ${c.oct}
+    `;
+}
+</script>
+
+</body>
+</html>
